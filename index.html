@@ -1,0 +1,714 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ficha Técnica de Servicio</title>
+    <meta name="theme-color" content="#1e3a8a">
+    <link rel="manifest" href="manifest.webmanifest">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="default">
+    <style>
+        :root {
+            --primary: #1e3a8a;
+            --primary-hover: #1d4ed8;
+            --bg: #f8fafc;
+            --card-bg: #ffffff;
+            --text: #334155;
+            --border: #cbd5e1;
+            --online: #10b981;
+            --offline: #3b82f6;
+        }
+        
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+        }
+
+        body {
+            background-color: var(--bg);
+            color: var(--text);
+            padding: 20px;
+            line-height: 1.5;
+        }
+
+        .container {
+            max-width: 850px;
+            margin: 0 auto;
+            background: var(--card-bg);
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1);
+        }
+
+        .status-bar {
+            padding: 10px;
+            border-radius: 6px;
+            margin-bottom: 20px;
+            text-align: center;
+            font-weight: bold;
+            color: white;
+            transition: background-color 0.3s;
+        }
+
+        .status-bar.online { background-color: var(--online); }
+        .status-bar.offline { background-color: var(--offline); }
+        .status-bar.pending { background-color: #b45309; }
+
+        header {
+            text-align: center;
+            border-bottom: 3px solid var(--primary);
+            padding-bottom: 15px;
+            margin-bottom: 25px;
+        }
+
+        header h1 {
+            color: var(--primary);
+            font-size: 24px;
+            text-transform: uppercase;
+        }
+
+        section {
+            margin-bottom: 25px;
+            padding-bottom: 15px;
+            border-bottom: 1px solid var(--border);
+        }
+
+        section h2 {
+            color: var(--primary);
+            font-size: 18px;
+            margin-bottom: 15px;
+            background: #f1f5f9;
+            padding: 8px 12px;
+            border-left: 5px solid var(--primary);
+            border-radius: 0 4px 4px 0;
+        }
+
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+            gap: 15px;
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+            margin-bottom: 15px;
+        }
+
+        .form-group.full-width {
+            grid-column: 1 / -1;
+        }
+
+        label {
+            font-size: 14px;
+            font-weight: 600;
+            margin-bottom: 5px;
+        }
+
+        input[type="text"],
+        input[type="tel"],
+        input[type="date"],
+        input[type="time"],
+        select,
+        textarea {
+            padding: 10px;
+            border: 1px solid var(--border);
+            border-radius: 4px;
+            font-size: 14px;
+            background: #fff;
+            width: 100%;
+        }
+
+        input:focus, select:focus, textarea:focus {
+            outline: 2px solid var(--primary);
+        }
+
+        textarea {
+            resize: vertical;
+            min-height: 80px;
+        }
+
+        .radio-group, .checkbox-group {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 15px;
+            padding: 5px 0;
+        }
+
+        .radio-item, .checkbox-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            cursor: pointer;
+        }
+
+        .signature-container {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+            margin-top: 15px;
+        }
+
+        .signature-box {
+            border: 1px dashed var(--border);
+            padding: 10px;
+            border-radius: 6px;
+            background: #fafafa;
+            text-align: center;
+        }
+
+        canvas {
+            border: 1px solid var(--border);
+            background: #fff;
+            width: 100%;
+            height: 150px;
+            border-radius: 4px;
+            touch-action: none;
+        }
+
+        .btn-clear {
+            background: #ef4444;
+            color: white;
+            border: none;
+            padding: 5px 10px;
+            font-size: 12px;
+            border-radius: 4px;
+            cursor: pointer;
+            margin-top: 5px;
+        }
+
+        .conformidad {
+            background: #fff8e1;
+            border: 1px solid #ffe082;
+            padding: 15px;
+            border-radius: 6px;
+            margin: 20px 0;
+        }
+
+        .actions {
+            text-align: center;
+            margin-top: 30px;
+        }
+
+        .btn-submit {
+            background-color: var(--primary);
+            color: white;
+            font-size: 18px;
+            font-weight: bold;
+            padding: 15px 40px;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            box-shadow: 0 4px 6px rgb(0 0 0 / 0.1);
+            transition: background-color 0.2s;
+        }
+
+        .btn-submit:hover {
+            background-color: var(--primary-hover);
+        }
+        .btn-submit:disabled {
+            opacity: 0.65;
+            cursor: wait;
+        }
+
+        #seguimiento_detalle {
+            display: none;
+        }
+
+        /* DISEÑO DE IMPRESIÓN / PDF */
+        @media print {
+            body {
+                background: white;
+                padding: 0;
+            }
+            .container {
+                box-shadow: none;
+                padding: 0;
+                max-width: 100%;
+            }
+            .status-bar, .actions, .btn-clear {
+                display: none !important;
+            }
+            canvas {
+                border: 1px solid #000;
+            }
+            section h2 {
+                background: #e2e8f0 !important;
+                -webkit-print-color-adjust: exact;
+                print-color-adjust: exact;
+            }
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <div id="statusBar" class="status-bar online">Cargando estado de red...</div>
+
+    <header>
+        <h1>Ficha Técnica de Servicio</h1>
+    </header>
+
+    <form id="servicioForm" onsubmit="guardarEnSheets(event)">
+        <!-- 1. INFORMACIÓN DEL SERVICIO -->
+        <section>
+            <h2>1. Información del Servicio</h2>
+            <div class="grid">
+                <div class="form-group">
+                    <label>Fecha:</label>
+                    <input type="date" required id="fecha">
+                </div>
+                <div class="form-group">
+                    <label>Nombre del Técnico:</label>
+                    <input type="text" required id="tecnico">
+                </div>
+                <div class="form-group">
+                    <label>Número del Técnico:</label>
+                    <input type="tel" required id="tecnico_tel">
+                </div>
+                <div class="form-group">
+                    <label>Empresa / Cliente:</label>
+                    <input type="text" required id="cliente">
+                </div>
+                <div class="form-group">
+                    <label>Sucursal:</label>
+                    <input type="text" required id="sucursal">
+                </div>
+                <div class="form-group">
+                    <label>Destino:</label>
+                    <input type="text" required id="destino">
+                </div>
+            </div>
+            <div class="form-group" style="margin-top:15px;">
+                <label>Tipo de Servicio:</label>
+                <div class="radio-group">
+                    <label class="radio-item"><input type="radio" name="tipo_servicio" value="Mantenimiento preventivo" required> Mantenimiento preventivo</label>
+                    <label class="radio-item"><input type="radio" name="tipo_servicio" value="Mantenimiento correctivo"> Mantenimiento correctivo</label>
+                    <label class="radio-item"><input type="radio" name="tipo_servicio" value="Instalación"> Instalación</label>
+                    <label class="radio-item"><input type="radio" name="tipo_servicio" value="Diagnóstico"> Diagnóstico</label>
+                    <label class="radio-item"><input type="radio" name="tipo_servicio" value="Reparación"> Reparación</label>
+                    <label class="radio-item"><input type="radio" name="tipo_servicio" value="Otro"> Otro</label>
+                </div>
+            </div>
+        </section>
+
+        <!-- 2. INFORMACIÓN DEL EQUIPO -->
+        <section>
+            <h2>2. Información del Equipo</h2>
+            <div class="grid">
+                <div class="form-group">
+                    <label>Tipo de Equipo:</label>
+                    <input type="text" required id="equipo_tipo">
+                </div>
+                <div class="form-group">
+                    <label>Marca:</label>
+                    <input type="text" required id="equipo_marca">
+                </div>
+                <div class="form-group">
+                    <label>Modelo:</label>
+                    <input type="text" required id="equipo_modelo">
+                </div>
+                <div class="form-group">
+                    <label>Número de Serie:</label>
+                    <input type="text" required id="equipo_serie">
+                </div>
+                <div class="form-group">
+                    <label>Voltaje del Equipo:</label>
+                    <input type="text" id="equipo_voltaje">
+                </div>
+                <div class="form-group">
+                    <label>Estado del Equipo al Recibirlo:</label>
+                    <input type="text" required id="equipo_estado_recibir">
+                </div>
+            </div>
+        </section>
+
+        <!-- 3. DESCRIPCIÓN DEL SERVICIO -->
+        <section>
+            <h2>3. Descripción del Servicio</h2>
+            <div class="form-group">
+                <label>Descripción del problema / motivo de visita:</label>
+                <textarea required id="desc_problema"></textarea>
+            </div>
+            <div class="form-group">
+                <label>Trabajo realizado:</label>
+                <textarea required id="trabajo_realizado"></textarea>
+            </div>
+            <div class="form-group">
+                <label>Repuestos utilizados:</label>
+                <textarea id="repuestos_utilizados"></textarea>
+            </div>
+            <div class="form-group">
+                <label>Observaciones:</label>
+                <textarea id="observaciones"></textarea>
+            </div>
+            <div class="form-group">
+                <label>Estado final del equipo:</label>
+                <input type="text" required id="estado_final">
+            </div>
+        </section>
+
+        <!-- 4. SEGUIMIENTO -->
+        <section>
+            <h2>4. Seguimiento</h2>
+            <div class="form-group">
+                <label>¿Se requiere seguimiento?</label>
+                <div class="radio-group">
+                    <label class="radio-item"><input type="radio" name="requiere_seguimiento" value="Sí" onclick="toggleSeguimiento(true)" required> Sí</label>
+                    <label class="radio-item"><input type="radio" name="requiere_seguimiento" value="No" onclick="toggleSeguimiento(false)"> No</label>
+                </div>
+            </div>
+            
+            <div id="seguimiento_detalle">
+                <div class="form-group">
+                    <label>Motivo / detalle del seguimiento:</label>
+                    <textarea id="seg_motivo"></textarea>
+                </div>
+                <div class="grid">
+                    <div class="form-group">
+                        <label>Tiempo estimado próxima visita:</label>
+                        <input type="text" id="seg_tiempo">
+                    </div>
+                    <div class="form-group">
+                        <label>Fecha estimada próxima visita:</label>
+                        <input type="date" id="seg_fecha">
+                    </div>
+                </div>
+            </div>
+
+            <div class="form-group" style="margin-top:15px;">
+                <label>Recomendaciones:</label>
+                <textarea id="recomendaciones"></textarea>
+            </div>
+        </section>
+
+        <!-- 5. EVIDENCIA -->
+        <section class="actions-hidden-print">
+            <h2>5. Evidencia Fotográfica (Instrucciones)</h2>
+            <p style="font-size:14px; margin-bottom:10px; color:#64748b;">
+                Nota: Al guardar en PDF offline, puedes imprimir esta ficha y adjuntar de manera impresa las fotografías antes/después, o pegarlas digitalmente en el PDF resultante.
+            </p>
+        </section>
+
+        <!-- 6. FIRMAS DIGITALES Y CONFORMIDAD -->
+        <section>
+            <h2>6. Conformidad del Servicio y Firmas</h2>
+            
+            <div class="conformidad">
+                <label class="checkbox-item" style="font-weight: bold;">
+                    <input type="checkbox" required id="check_conformidad"> 
+                    CONFORMIDAD DEL SERVICIO: El cliente/encargado confirma que el servicio realizado y las observaciones indicadas en esta ficha corresponden a la atención efectuada.
+                </label>
+            </div>
+
+            <div class="grid">
+                <div class="form-group">
+                    <label>Nombre de quien recibe:</label>
+                    <input type="text" required id="recibe_nombre">
+                </div>
+                <div class="form-group">
+                    <label>Cargo de quien recibe:</label>
+                    <input type="text" required id="recibe_cargo">
+                </div>
+                <div class="form-group">
+                    <label>Fecha y hora de aceptación:</label>
+                    <input type="datetime-local" required id="recibe_fecha_hora">
+                </div>
+            </div>
+
+            <div class="signature-container">
+                <div class="signature-box">
+                    <label>Firma del Técnico</label>
+                    <canvas id="canvasTecnico"></canvas>
+                    <button type="button" class="btn-clear" onclick="clearCanvas('canvasTecnico')">Limpiar</button>
+                </div>
+                <div class="signature-box">
+                    <label>Firma del Cliente / Encargado</label>
+                    <canvas id="canvasCliente"></canvas>
+                    <button type="button" class="btn-clear" onclick="clearCanvas('canvasCliente')">Limpiar</button>
+                </div>
+            </div>
+        </section>
+
+        <div class="actions">
+            <button type="submit" class="btn-submit" id="btnGuardar">GUARDAR EN GOOGLE SHEETS</button>
+            <p id="mensajeEnvio" role="status" aria-live="polite" style="margin-top:12px;font-weight:600;"></p>
+        </div>
+    </form>
+</div>
+
+<script>
+    // Control de Estado de Red
+    function updateOnlineStatus() {
+        const statusBar = document.getElementById('statusBar');
+        if (navigator.onLine) {
+            statusBar.textContent = "🟢 CON INTERNET - Las fichas pendientes se sincronizarán automáticamente";
+            statusBar.className = "status-bar online";
+        } else {
+            statusBar.textContent = "📴 SIN INTERNET - Puedes llenar y guardar fichas en este dispositivo";
+            statusBar.className = "status-bar offline";
+        }
+    }
+    window.addEventListener('online', updateOnlineStatus);
+    window.addEventListener('offline', updateOnlineStatus);
+    updateOnlineStatus();
+
+    // Mostrar u ocultar sección de seguimiento
+    function toggleSeguimiento(show) {
+        const div = document.getElementById('seguimiento_detalle');
+        div.style.display = show ? 'block' : 'none';
+        document.getElementById('seg_motivo').required = show;
+    }
+
+    // Configuración de los paneles de firmas (Canvas)
+    function setupCanvas(canvasId) {
+        const canvas = document.getElementById(canvasId);
+        const ctx = canvas.getContext('2d');
+        let drawing = false;
+
+        // Ajustar resolución del canvas
+        canvas.width = canvas.offsetWidth;
+        canvas.height = canvas.offsetHeight;
+
+        function getMousePos(e) {
+            const rect = canvas.getBoundingClientRect();
+            const clientX = e.touches ? e.touches[0].clientX : e.clientX;
+            const clientY = e.touches ? e.touches[0].clientY : e.clientY;
+            return { x: clientX - rect.left, y: clientY - rect.top };
+        }
+
+        function startDrawing(e) {
+            drawing = true;
+            const pos = getMousePos(e);
+            ctx.beginPath();
+            ctx.moveTo(pos.x, pos.y);
+            e.preventDefault();
+        }
+
+        function draw(e) {
+            if (!drawing) return;
+            const pos = getMousePos(e);
+            ctx.lineTo(pos.x, pos.y);
+            ctx.stroke();
+            e.preventDefault();
+        }
+
+        function stopDrawing() { drawing = false; }
+
+        canvas.addEventListener('mousedown', startDrawing);
+        canvas.addEventListener('mousemove', draw);
+        canvas.addEventListener('mouseup', stopDrawing);
+
+        canvas.addEventListener('touchstart', startDrawing);
+        canvas.addEventListener('touchmove', draw);
+        canvas.addEventListener('touchend', stopDrawing);
+
+        ctx.strokeStyle = '#000000';
+        ctx.lineWidth = 2;
+    }
+
+    window.onload = function() {
+        setupCanvas('canvasTecnico');
+        setupCanvas('canvasCliente');
+        
+        // Poner la fecha actual por defecto
+        const hoy = new Date().toISOString().split('T')[0];
+        document.getElementById('fecha').value = hoy;
+    };
+
+    function clearCanvas(canvasId) {
+        const canvas = document.getElementById(canvasId);
+        const ctx = canvas.getContext('2d');
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+    }
+
+    // URL de la aplicación web de Google Apps Script
+    const URL_APPS_SCRIPT = "https://script.google.com/macros/s/AKfycbzCqyQNKTuvgyBoeBZC9Zy_GNXMQsW41clDYTSRJMbobgcu5NkwibaodmhGeb3lf_Su/exec";
+
+    // Almacenamiento local persistente (IndexedDB). Las firmas también se guardan aquí.
+    const DB_NAME = "FichaServicioOffline";
+    const DB_VERSION = 1;
+    const STORE_NAME = "pendientes";
+
+    function abrirDB() {
+        return new Promise((resolve, reject) => {
+            const request = indexedDB.open(DB_NAME, DB_VERSION);
+            request.onupgradeneeded = () => {
+                const db = request.result;
+                if (!db.objectStoreNames.contains(STORE_NAME)) {
+                    db.createObjectStore(STORE_NAME, { keyPath: "local_id" });
+                }
+            };
+            request.onsuccess = () => resolve(request.result);
+            request.onerror = () => reject(request.error);
+        });
+    }
+
+    async function guardarPendiente(datos) {
+        const db = await abrirDB();
+        return new Promise((resolve, reject) => {
+            const tx = db.transaction(STORE_NAME, "readwrite");
+            tx.objectStore(STORE_NAME).put(datos);
+            tx.oncomplete = () => { db.close(); resolve(); };
+            tx.onerror = () => { db.close(); reject(tx.error); };
+        });
+    }
+
+    async function listarPendientes() {
+        const db = await abrirDB();
+        return new Promise((resolve, reject) => {
+            const tx = db.transaction(STORE_NAME, "readonly");
+            const req = tx.objectStore(STORE_NAME).getAll();
+            req.onsuccess = () => resolve(req.result || []);
+            req.onerror = () => reject(req.error);
+            tx.oncomplete = () => db.close();
+        });
+    }
+
+    async function eliminarPendiente(localId) {
+        const db = await abrirDB();
+        return new Promise((resolve, reject) => {
+            const tx = db.transaction(STORE_NAME, "readwrite");
+            tx.objectStore(STORE_NAME).delete(localId);
+            tx.oncomplete = () => { db.close(); resolve(); };
+            tx.onerror = () => { db.close(); reject(tx.error); };
+        });
+    }
+
+    function obtenerDatosFormulario() {
+        const formulario = document.getElementById("servicioForm");
+        const datos = {};
+        Array.from(formulario.elements).forEach(elemento => {
+            if (!elemento.id || elemento.type === "radio" || elemento.type === "checkbox" ||
+                elemento.type === "submit" || elemento.tagName === "BUTTON") return;
+            datos[elemento.id] = elemento.value;
+        });
+        ["tipo_servicio", "requiere_seguimiento"].forEach(nombre => {
+            const seleccionado = formulario.querySelector('input[name="' + nombre + '"]:checked');
+            datos[nombre] = seleccionado ? seleccionado.value : "";
+        });
+        datos.check_conformidad = document.getElementById("check_conformidad").checked;
+        datos.firma_tecnico = document.getElementById("canvasTecnico").toDataURL("image/png");
+        datos.firma_cliente = document.getElementById("canvasCliente").toDataURL("image/png");
+        datos.fecha_registro = new Date().toISOString();
+        datos.local_id = (crypto.randomUUID ? crypto.randomUUID() : String(Date.now()) + Math.random().toString(16).slice(2));
+        return datos;
+    }
+
+    // Google Apps Script recibe la misma estructura de datos que antes.
+    // La respuesta no se puede leer por el modo no-cors; por eso se muestra como solicitud enviada,
+    // y se recomienda verificar la fila en Sheets durante las primeras pruebas.
+    async function enviarAGoogleSheets(datos) {
+        await fetch(URL_APPS_SCRIPT, {
+            method: "POST",
+            mode: "no-cors",
+            headers: { "Content-Type": "text/plain;charset=utf-8" },
+            body: JSON.stringify(datos)
+        });
+    }
+
+    let sincronizando = false;
+    async function sincronizarPendientes() {
+        if (!navigator.onLine || sincronizando) return;
+        sincronizando = true;
+        const statusBar = document.getElementById("statusBar");
+        try {
+            const pendientes = await listarPendientes();
+            for (const ficha of pendientes) {
+                try {
+                    await enviarAGoogleSheets(ficha);
+                    await eliminarPendiente(ficha.local_id);
+                } catch (error) {
+                    console.error("Sincronización pendiente:", error);
+                    break; // conservar esta ficha y las siguientes para reintentar
+                }
+            }
+            const restantes = (await listarPendientes()).length;
+            if (statusBar) {
+                statusBar.textContent = restantes
+                    ? `🟠 ${restantes} ficha(s) pendiente(s) de sincronizar`
+                    : "🟢 CON INTERNET - Sin fichas pendientes";
+                statusBar.className = restantes ? "status-bar pending" : "status-bar online";
+            }
+        } catch (error) {
+            console.error("No se pudo acceder al almacenamiento local:", error);
+        } finally {
+            sincronizando = false;
+        }
+    }
+
+    async function guardarEnSheets(event) {
+        event.preventDefault();
+        const formulario = document.getElementById("servicioForm");
+        const boton = document.getElementById("btnGuardar");
+        const mensaje = document.getElementById("mensajeEnvio");
+        if (!formulario.reportValidity()) return;
+
+        boton.disabled = true;
+        boton.textContent = "GUARDANDO...";
+        try {
+            const datos = obtenerDatosFormulario();
+            // Primero se guarda localmente. Nunca se borra el formulario antes de persistirlo.
+            await guardarPendiente(datos);
+            mensaje.style.color = "#047857";
+            mensaje.textContent = "✅ Ficha guardada en este dispositivo. Preparando sincronización...";
+
+            if (navigator.onLine) {
+                await sincronizarPendientes();
+                mensaje.textContent = "✅ Ficha guardada localmente y solicitud de sincronización enviada. Verifica la pestaña Respuestas en Google Sheets.";
+            } else {
+                mensaje.textContent = "📴 Ficha guardada sin Internet. Se enviará cuando vuelva la conexión y abras la aplicación.";
+            }
+
+            formulario.reset();
+            clearCanvas("canvasTecnico");
+            clearCanvas("canvasCliente");
+            document.getElementById("seguimiento_detalle").style.display = "none";
+            document.getElementById("seg_motivo").required = false;
+            document.getElementById("fecha").value = new Date().toISOString().split("T")[0];
+        } catch (error) {
+            console.error(error);
+            mensaje.style.color = "#b91c1c";
+            mensaje.textContent = "❌ No se pudo guardar en este dispositivo. No cierres la página; revisa el almacenamiento del navegador.";
+        } finally {
+            boton.disabled = false;
+            boton.textContent = "GUARDAR EN GOOGLE SHEETS";
+            updateOnlineStatus();
+        }
+    }
+
+    async function actualizarEstadoYMostrarPendientes() {
+        updateOnlineStatus();
+        try {
+            const n = (await listarPendientes()).length;
+            if (n) {
+                const bar = document.getElementById("statusBar");
+                bar.textContent = navigator.onLine
+                    ? `🟠 ${n} ficha(s) pendiente(s); sincronizando...`
+                    : `📴 SIN INTERNET - ${n} ficha(s) guardada(s) para sincronizar`;
+                bar.className = navigator.onLine ? "status-bar pending" : "status-bar offline";
+            }
+        } catch (e) { console.error(e); }
+    }
+
+    window.addEventListener("online", () => { actualizarEstadoYMostrarPendientes(); sincronizarPendientes(); });
+    window.addEventListener("offline", actualizarEstadoYMostrarPendientes);
+    document.addEventListener("visibilitychange", () => { if (!document.hidden) sincronizarPendientes(); });
+
+    // Instalar el Service Worker para guardar la interfaz y abrirla sin conexión.
+    if ("serviceWorker" in navigator && location.protocol.startsWith("http")) {
+        window.addEventListener("load", () => navigator.serviceWorker.register("./sw.js").catch(console.error));
+    }
+
+    window.addEventListener("load", async () => {
+        await actualizarEstadoYMostrarPendientes();
+        if (navigator.onLine) sincronizarPendientes();
+    });
+
+</script>
+
+</body>
+</html>

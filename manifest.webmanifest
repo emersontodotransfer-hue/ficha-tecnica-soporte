@@ -1,0 +1,13 @@
+{
+  "id": "./",
+  "name": "Ficha Técnica de Servicio",
+  "short_name": "Ficha Servicio",
+  "description": "Registro técnico de servicios con almacenamiento local y sincronización cuando vuelve Internet.",
+  "lang": "es",
+  "start_url": "./index.html",
+  "scope": "./",
+  "display": "standalone",
+  "background_color": "#f8fafc",
+  "theme_color": "#1e3a8a",
+  "icons": []
+}
